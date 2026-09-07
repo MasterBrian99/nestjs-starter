@@ -13,8 +13,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Public, CurrentUser } from '../../common/decorators/index.js';
-import { UserDto } from '../user/dtos/user.dto.js';
 import { AuthService } from './auth.service.js';
+import { UserModel } from '../user/models/user.model.js';
 import { LoginResponseDto } from './dtos/login-response.dto.js';
 import { loginSchema, type LoginDto } from './dtos/login.schema.js';
 import {
@@ -55,7 +55,7 @@ export class AuthController {
   @ApiUnauthorizedException()
   @UseInterceptors(StandardSchemaSerializerInterceptor)
   @SerializeOptions({ schema: currentUserSchema })
-  async me(@CurrentUser() user: UserDto): Promise<CurrentUserDto> {
-    return { user };
+  async me(@CurrentUser() user: UserModel): Promise<CurrentUserDto> {
+    return { user: user.toDto() };
   }
 }

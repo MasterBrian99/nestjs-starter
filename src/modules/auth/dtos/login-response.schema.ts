@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 // Runtime response schema for the StandardSchemaSerializerInterceptor.
-// Fields are intentionally lenient (`name` is optional — the backing table
-// currently has no `name` column) so serialization never breaks reads.
-export const userResponseSchema = z.looseObject({
+// Uses `z.object` (strip unknown keys) so sensitive fields like
+// `passwordHash` never leak even if a raw UserModel reaches the serializer.
+export const userResponseSchema = z.object({
   id: z.string(),
   email: z.string(),
   name: z.string().nullish(),

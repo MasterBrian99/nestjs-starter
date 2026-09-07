@@ -135,6 +135,7 @@ describe('AuthModule', () => {
         );
         expect(response.body.user).toHaveProperty('id');
         expect(response.body.user).not.toHaveProperty('password');
+        expect(response.body.user).not.toHaveProperty('passwordHash');
       });
 
       it('should return 401 when not authenticated', async () => {
