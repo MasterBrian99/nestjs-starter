@@ -1,12 +1,12 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, StandardSchemaValidationPipe } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
-import { TestModuleFactory } from '../factory/test-module.factory';
-import { ValidationException } from 'common/exceptions/validation.exception';
-import { BaseExceptionsFilter } from 'common/filters/base-exception.filter';
-import { AllExceptionsFilter } from 'common/filters/all-exception.filter';
-import MOCK_USERS from '../mocks/user-mocks';
+import { TestModuleFactory } from '../factory/test-module.factory.js';
+import { ValidationException } from '../../src/common/exceptions/validation.exception.js';
+import { BaseExceptionsFilter } from '../../src/common/filters/base-exception.filter.js';
+import { AllExceptionsFilter } from '../../src/common/filters/all-exception.filter.js';
+import MOCK_USERS from '../mocks/user-mocks.js';
 import request from 'supertest';
-import { PostgresContainer } from '../utils/postgres-container';
+import { PostgresContainer } from '../utils/postgres-container.js';
 
 describe('AuthModule', () => {
   let testingModule: TestingModule;
@@ -23,13 +23,10 @@ describe('AuthModule', () => {
 
     app.useGlobalFilters(new AllExceptionsFilter(), new BaseExceptionsFilter());
     app.useGlobalPipes(
-      new ValidationPipe({
-        exceptionFactory: (errors) => {
-          return new ValidationException(errors);
+      new StandardSchemaValidationPipe({
+        exceptionFactory: (issues) => {
+          return new ValidationException(issues);
         },
-        transform: true,
-        whitelist: true,
-        validationError: { target: false },
       }),
     );
 

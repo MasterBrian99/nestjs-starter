@@ -1,5 +1,5 @@
 import { createUnionType, ObjectType } from '@nestjs/graphql';
-import { EmailAlreadyTakenError } from '../errors/email-already-taken-error.object';
+import { EmailAlreadyTakenError } from '../errors/email-already-taken-error.object.js';
 
 @ObjectType()
 export class UserRegistrationSuccess {

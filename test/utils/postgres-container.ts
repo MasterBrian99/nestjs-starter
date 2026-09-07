@@ -2,19 +2,28 @@ import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
 } from '@testcontainers/postgresql';
-import { DB } from 'database/schema/db';
+import { DB } from '../../src/database/schema/db.js';
 import {
   CamelCasePlugin,
-  FileMigrationProvider,
   Kysely,
-  Migrator,
   PostgresDialect,
 } from 'kysely';
-import { join } from 'path';
-import { promises as fs } from 'fs';
-import * as path from 'path';
-
+import { Migrator, type MigrationProvider } from 'kysely/migration';
 import { Pool } from 'pg';
+// NOTE: migrations are imported statically (instead of kysely's
+// FileMigrationProvider) so they go through vite's transform pipeline,
+// which resolves the ESM `.js` specifiers to their `.ts` sources.
+// Add new migrations to this map when they are created.
+import * as createUsers from '../../src/database/migrations/20250214040802_create_users.js';
+import * as addUserName from '../../src/database/migrations/20260906201418_add_user_name.js';
+
+const testMigrations: MigrationProvider = {
+  getMigrations: async () => ({
+    '20250214040802_create_users': createUsers,
+    '20260906201418_add_user_name': addUserName,
+  }),
+};
+
 /**
  * This class manages a PostgreSQL container for testing purposes.
  * It ensures that the container is started only once and provides methods
@@ -26,7 +35,7 @@ export class PostgresContainer {
   static async getInstance(): Promise<StartedPostgreSqlContainer> {
     if (!PostgresContainer.instance) {
       const container = await new PostgreSqlContainer(
-        'postgres:15-alpine',
+        'postgres:16-alpine',
       ).start();
       PostgresContainer.instance = container;
 
@@ -55,18 +64,10 @@ export class PostgresContainer {
   static async runMigrations(db: Kysely<DB>): Promise<void> {
     console.log('Running migrations...');
 
-    const migrationsPath = join(__dirname, '../../src/database/migrations');
-
     try {
-      await fs.access(migrationsPath);
-
       const migrator = new Migrator({
-        db: db,
-        provider: new FileMigrationProvider({
-          fs,
-          path,
-          migrationFolder: migrationsPath,
-        }),
+        db,
+        provider: testMigrations,
         allowUnorderedMigrations: true,
       });
 

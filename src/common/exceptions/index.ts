@@ -1,3 +1,3 @@
-export * from './base.exception';
-export * from '../../modules/user/exceptions/user-not-found.exception';
-export * from './validation.exception';
+export * from './base.exception.js';
+export * from '../../modules/user/exceptions/user-not-found.exception.js';
+export * from './validation.exception.js';

@@ -1,4 +1,4 @@
-import { BaseException } from '../exceptions/base.exception';
+import { BaseException } from '../exceptions/base.exception.js';
 import {
   ExceptionFilter,
   Catch,

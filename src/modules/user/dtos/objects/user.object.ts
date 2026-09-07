@@ -20,7 +20,8 @@ export class UserObject {
    * @type {string}
    * @memberof UserObject
    */
-  name!: string;
+  @Field(() => String, { nullable: true })
+  name!: string | null;
 
   /**
    * Is user verified

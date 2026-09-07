@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
-import { Public } from 'common/decorators';
-import { AuthService } from '../auth.service';
-import { LoginResult, LoginSuccess } from '../dtos/results/login-result.object';
-import { LoginInput } from '../dtos/inputs/login.input';
-import { TokensObject } from '../dtos/objects/tokens.object';
-import { plainToClass } from 'class-transformer';
-import { InvalidLoginOrPasswordException } from '../exceptions/invalid-login-or-password.exception';
-import { InvalidLoginOrPasswordError } from '../dtos/errors/invalid-login-or-password-error.object';
+import { Public } from '../../../common/decorators/index.js';
+import { AuthService } from '../auth.service.js';
+import { LoginResult, LoginSuccess } from '../dtos/results/login-result.object.js';
+import { LoginInput } from '../dtos/inputs/login.input.js';
+import { TokensObject } from '../dtos/objects/tokens.object.js';
+import { loginSchema } from '../dtos/login.schema.js';
+import { ValidationException } from '../../../common/exceptions/validation.exception.js';
+import { InvalidLoginOrPasswordException } from '../exceptions/invalid-login-or-password.exception.js';
+import { InvalidLoginOrPasswordError } from '../dtos/errors/invalid-login-or-password-error.object.js';
 
 @Injectable()
 export class AuthResolver {
@@ -20,8 +21,13 @@ export class AuthResolver {
   async loginWithPassword(
     @Args('input') input: LoginInput,
   ): Promise<typeof LoginResult> {
+    const parsed = loginSchema.safeParse(input);
+    if (!parsed.success) {
+      throw new ValidationException(parsed.error.issues);
+    }
+
     try {
-      const { accessToken } = await this.authService.loginUser(input);
+      const { accessToken } = await this.authService.loginUser(parsed.data);
       const result = new LoginSuccess();
       const tokenObject = new TokensObject();
       tokenObject.accessToken = accessToken;
@@ -31,7 +37,9 @@ export class AuthResolver {
       return result;
     } catch (error) {
       if (error instanceof InvalidLoginOrPasswordException) {
-        return plainToClass(InvalidLoginOrPasswordError, error);
+        return Object.assign(new InvalidLoginOrPasswordError(), {
+          message: error.message,
+        });
       }
 
       throw error;

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { KYSELY_CONNECTION } from './consts';
+import { KYSELY_CONNECTION } from './consts.js';
 import { Kysely } from 'kysely';
-import { DB } from './schema/db';
+import { DB } from './schema/db.js';
 
 @Injectable()
 export class DatabaseService {

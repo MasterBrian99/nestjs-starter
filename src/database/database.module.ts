@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseHealthIndicator } from './database.health';
-import { databaseProviders } from './database.provider';
-import { DatabaseService } from './database.service';
+import { DatabaseHealthIndicator } from './database.health.js';
+import { databaseProviders } from './database.provider.js';
+import { DatabaseService } from './database.service.js';
 import { TerminusModule } from '@nestjs/terminus';
 
 @Global()

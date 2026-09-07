@@ -1,12 +1,12 @@
-import { CreatedAt, UpdatedAt } from './common/datetime';
+import { CreatedAt, UpdatedAt } from './common/datetime.js';
 import { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
 export interface UserTable {
   id: Generated<string>;
-  name: string;
+  name: string | null;
   email: string;
   passwordHash: string;
-  verified: boolean;
+  verified: Generated<boolean>;
   createdAt: CreatedAt;
   updatedAt: UpdatedAt;
 }

@@ -1,22 +1,23 @@
-import { HealthModule } from './modules/health/health.module';
-import { DatabaseModule } from './database/database.module';
+import { HealthModule } from './modules/health/health.module.js';
+import { DatabaseModule } from './database/database.module.js';
 import { Module, Logger } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import configuration, {
   LoggerConfig,
   LoggerFormat,
-} from './config/configuration';
-import { AppConfig } from './config/configuration';
+  envSchema,
+} from './config/configuration.js';
+import { AppConfig } from './config/configuration.js';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtGuard } from './common/guards/jwt.guard';
-import { AuthModule } from 'modules/auth/auth.module';
-import { UserModule } from 'modules/user/user.module';
+import { JwtGuard } from './common/guards/jwt.guard.js';
+import { AuthModule } from './modules/auth/auth.module.js';
+import { UserModule } from './modules/user/user.module.js';
 import { GraphQLModule } from '@nestjs/graphql';
-import { DataloaderModule } from 'dataloader/dataloader.module';
-import { DataloaderService } from 'dataloader/dataloader.service';
+import { DataloaderModule } from './dataloader/dataloader.module.js';
+import { DataloaderService } from './dataloader/dataloader.service.js';
 import { join } from 'path';
-import { formatGraphQLError } from 'common/graphql/errors';
+import { formatGraphQLError } from './common/graphql/errors.js';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 
@@ -28,12 +29,13 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
+      validationSchema: envSchema,
     }),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService<AppConfig>) => {
-        const loggerConfig = config.get<LoggerConfig>('logger');
+        const loggerConfig = config.getOrThrow<LoggerConfig>('logger');
 
         return {
           pinoHttp: {
@@ -61,7 +63,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
         return {
           autoSchemaFile: join(process.cwd(), 'src', 'schema.gql'),
           debug: true,
-          playground: true,
+          graphiql: true,
           introspection: true,
           formatError: formatGraphQLError,
           context: () => ({

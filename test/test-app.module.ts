@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
-import { JwtGuard } from 'common/guards';
-import { AppConfig, LoggerConfig, LoggerFormat } from 'config/configuration';
-import { DatabaseModule } from 'database/database.module';
-import { AuthModule } from 'modules/auth/auth.module';
-import { HealthModule } from 'modules/health/health.module';
-import { UserModule } from 'modules/user/user.module';
+import { JwtGuard } from '../src/common/guards/index.js';
+import { AppConfig, LoggerConfig, LoggerFormat } from '../src/config/configuration.js';
+import { DatabaseModule } from '../src/database/database.module.js';
+import { AuthModule } from '../src/modules/auth/auth.module.js';
+import { HealthModule } from '../src/modules/health/health.module.js';
+import { UserModule } from '../src/modules/user/user.module.js';
 import { Logger, LoggerModule } from 'nestjs-pino';
 
 @Module({

@@ -5,12 +5,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../modules/auth/auth.service';
+import { AuthService } from '../../modules/auth/auth.service.js';
 import { Request } from 'express';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator.js';
 import { Reflector } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
-import { getRequest } from 'common/graphql/context';
+import { getRequest } from '../graphql/context.js';
 
 @Injectable()
 export class JwtGuard implements CanActivate {

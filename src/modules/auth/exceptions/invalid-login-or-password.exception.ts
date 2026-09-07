@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
-import { BaseException } from 'common/exceptions/base.exception';
-import { ErrorCodes } from '../../../common/errors/error-codes';
+import { BaseException } from '../../../common/exceptions/base.exception.js';
+import { ErrorCodes } from '../../../common/errors/error-codes.js';
 
 export class InvalidLoginOrPasswordException extends BaseException {
   constructor() {

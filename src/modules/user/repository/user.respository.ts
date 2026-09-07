@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'database/database.service';
-import { DB } from 'database/schema/db';
-import { UserCreate } from 'database/schema/users';
-import { withTimestamps } from 'database/utils/datetime';
+import { DatabaseService } from '../../../database/database.service.js';
+import { DB } from '../../../database/schema/db.js';
+import { UserCreate } from '../../../database/schema/users.js';
+import { withTimestamps } from '../../../database/utils/datetime.js';
 import { Kysely } from 'kysely';
-import { getUUIDV4 } from 'utils/uuid';
-import { UserModel } from '../models/user.model';
+import { getUUIDV4 } from '../../../utils/uuid.js';
+import { UserModel } from '../models/user.model.js';
 
 @Injectable()
 export class UserRepositoy {

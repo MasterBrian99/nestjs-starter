@@ -1,5 +1,4 @@
-import { InputType } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class RegisterUserInput {
@@ -8,9 +7,9 @@ export class RegisterUserInput {
    *
    * @example jhonedoe@example.com
    * @type {string}
-   * @memberof RegisterUserDto
+   * @memberof RegisterUserInput
    */
-  @IsEmail() // this will be applied and enforced by class-validator
+  @Field(() => String)
   email!: string;
 
   /**
@@ -18,8 +17,8 @@ export class RegisterUserInput {
    *
    * @example abc@123
    * @type {string}
-   * @memberof RegisterUserDto
+   * @memberof RegisterUserInput
    */
-  @IsNotEmpty()
+  @Field(() => String)
   password!: string;
 }

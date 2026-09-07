@@ -1,6 +1,6 @@
-import { BaseException } from './base.exception';
+import { BaseException } from './base.exception.js';
 import { HttpStatus } from '@nestjs/common';
-import { ErrorCodes } from 'common/errors/error-codes';
+import { ErrorCodes } from '../errors/error-codes.js';
 
 export class UnknownErrorException extends BaseException {
   constructor() {

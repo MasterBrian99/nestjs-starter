@@ -1,9 +1,9 @@
-import { User } from 'database/schema/users';
-import { UserDto } from '../dtos/user.dto';
+import { User } from '../../../database/schema/users.js';
+import { UserDto } from '../dtos/user.dto.js';
 
 export class UserModel implements User {
   id: string;
-  name: string;
+  name: string | null;
   email: string;
   passwordHash: string;
   verified: boolean;

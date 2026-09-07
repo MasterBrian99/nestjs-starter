@@ -1,6 +1,6 @@
 import { RequestHandler, Response } from 'express';
 import { json } from 'body-parser';
-import RequestWithRawBody from 'common/interfaces/requestWithRawBody.interface';
+import RequestWithRawBody from '../common/interfaces/requestWithRawBody.interface.js';
 
 interface RawBodyMiddlewareOptions {
   paths?: string[];

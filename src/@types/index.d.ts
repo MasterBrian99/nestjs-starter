@@ -1,4 +1,4 @@
-import { User } from 'database/schema/users';
+import { User } from '../database/schema/users.js';
 
 declare global {
   namespace Express {

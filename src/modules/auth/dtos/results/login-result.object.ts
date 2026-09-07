@@ -1,6 +1,6 @@
-import { ObjectType, createUnionType } from '@nestjs/graphql';
-import { TokensObject } from '../objects/tokens.object';
-import { UserNotFoundError } from '../../../user/dtos/errors/user-not-found-error.object';
+import { Field, ObjectType, createUnionType } from '@nestjs/graphql';
+import { TokensObject } from '../objects/tokens.object.js';
+import { UserNotFoundError } from '../../../user/dtos/errors/user-not-found-error.object.js';
 
 @ObjectType()
 export class LoginSuccess {
@@ -10,6 +10,7 @@ export class LoginSuccess {
    * @type {TokensObject}
    * @memberof LoginSuccess
    */
+  @Field(() => TokensObject)
   tokens!: TokensObject;
 }
 

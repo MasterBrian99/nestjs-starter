@@ -3,9 +3,9 @@ import {
   HealthIndicatorResult,
   HealthIndicatorService,
 } from '@nestjs/terminus';
-import { KYSELY_CONNECTION } from './consts';
+import { KYSELY_CONNECTION } from './consts.js';
 import { Kysely, sql } from 'kysely';
-import { DB } from './schema/db';
+import { DB } from './schema/db.js';
 
 const KEY = 'database';
 
@@ -26,7 +26,6 @@ export class DatabaseHealthIndicator {
     } catch (error) {
       this.logger.error(error, 'Database connection failed');
       return indicator.down({
-        status: 'down',
         message: 'Database connection failed',
       });
     }

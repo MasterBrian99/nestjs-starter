@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import MOCK_USERS from './user-mocks';
+import MOCK_USERS from './user-mocks.js';
 
 export class MockJwtGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {

@@ -4,8 +4,8 @@ import {
   buildPlaceholder,
   buildTemplatedApiExceptionDecorator,
 } from '@nanogiants/nestjs-swagger-api-exception-decorator';
-import { ErrorCodes } from 'common/errors/error-codes';
-import { BaseException } from 'common/exceptions';
+import { ErrorCodes } from '../errors/error-codes.js';
+import { BaseException } from '../exceptions/index.js';
 
 export const TemplatedApiException = buildTemplatedApiExceptionDecorator(
   {

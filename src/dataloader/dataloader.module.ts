@@ -1,6 +1,6 @@
-import { DataloaderService } from './dataloader.service';
+import { DataloaderService } from './dataloader.service.js';
 import { Module } from '@nestjs/common';
-import { UserModule } from 'modules/user/user.module';
+import { UserModule } from '../modules/user/user.module.js';
 
 @Module({
   imports: [UserModule],

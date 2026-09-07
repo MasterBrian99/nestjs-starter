@@ -1,6 +1,8 @@
-import { PostgresContainer } from '../utils/postgres-container';
+import { PostgresContainer } from '../utils/postgres-container.js';
 
-export default async function globalTeardown() {
+export async function teardown() {
   console.log('🚀 Global Teardown: Stopping...');
   await PostgresContainer.stop();
 }
+
+export default teardown;

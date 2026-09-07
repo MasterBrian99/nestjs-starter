@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { createTestConfig } from '../helpers/test-configuration';
-import { TestAppModule } from '../test-app.module';
+import { createTestConfig } from '../helpers/test-configuration.js';
+import { TestAppModule } from '../test-app.module.js';
 export class TestModuleFactory {
   static async createTestModule(dbUrl: string): Promise<TestingModule> {
     const databaseUrl = dbUrl + '?sslmode=disable';
@@ -24,7 +24,20 @@ export class TestModuleFactory {
           const keys = key.split('.');
           let value = testConfig;
           for (const k of keys) {
+            // @ts-ignore 
             value = value[k];
+          }
+          return value;
+        },
+        getOrThrow: (key: string) => {
+          const keys = key.split('.');
+          let value = testConfig;
+          for (const k of keys) {
+            // @ts-ignore 
+            value = value?.[k];
+          }
+          if (value === undefined || value === null) {
+            throw new Error(`Configuration key "${key}" does not exist`);
           }
           return value;
         },

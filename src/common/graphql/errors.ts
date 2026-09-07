@@ -1,7 +1,10 @@
-import { ValidationException } from 'common/exceptions';
+import { ValidationException } from '../exceptions/index.js';
 import { GraphQLFormattedError } from 'graphql';
-import { TokenExpiredError } from 'jsonwebtoken';
-import { UnauthorizedException } from '../exceptions/unauthorized.exception';
+import jsonwebtoken from 'jsonwebtoken';
+
+const { TokenExpiredError: TokenExpiredErrorClass } = jsonwebtoken;
+type TokenExpiredError = InstanceType<typeof TokenExpiredErrorClass>;
+import { UnauthorizedException } from '../exceptions/unauthorized.exception.js';
 import { AuthenticationError, UserInputError } from '@nestjs/apollo';
 import { unwrapResolverError } from '@apollo/server/errors';
 
@@ -26,7 +29,7 @@ export function formatGraphQLError(
     return new AuthenticationError(e.message, { extensions });
   }
 
-  if (unwrapResolverError(err) instanceof TokenExpiredError) {
+  if (unwrapResolverError(err) instanceof TokenExpiredErrorClass) {
     const e = unwrapResolverError(err) as TokenExpiredError;
     const extensions = {
       code: 'UNAUTHENTICATED',

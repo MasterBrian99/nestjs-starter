@@ -1,5 +1,5 @@
 // test/config/test-configuration.ts
-import { AppConfig, LoggerFormat } from '../../src/config/configuration';
+import { AppConfig, LoggerFormat } from '../../src/config/configuration.js';
 
 export const createTestConfig = (databaseUrl: string): AppConfig => ({
   corsMaxAge: 86400,

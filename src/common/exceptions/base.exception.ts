@@ -1,7 +1,7 @@
 import { HttpException } from '@nestjs/common';
 
 export interface BaseExceptionOptions {
-  errorCode?: string | number;
+  errorCode?: string;
   errors?: any;
 }
 
@@ -20,7 +20,9 @@ export class BaseException extends HttpException {
     status = 500,
     options: BaseExceptionOptions = {},
   ) {
-    super(message, status);
+    // v12: errorCode is passed natively so it is serialized into the
+    // response body even without a custom filter.
+    super(message, status, { errorCode: options.errorCode });
     this.extra = options;
   }
 }

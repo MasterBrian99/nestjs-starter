@@ -1,26 +1,33 @@
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import {
+  StandardSchemaValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
-import { AppModule } from './app.module';
-import { BaseExceptionsFilter } from './common/filters/base-exception.filter';
-import { ValidationException } from './common/exceptions/validation.exception';
-import { AllExceptionsFilter } from 'common/filters/all-exception.filter';
-import rawBodyMiddleware from 'utils/rawBody.middleware';
+import { AppModule } from './app.module.js';
+import { BaseExceptionsFilter } from './common/filters/base-exception.filter.js';
+import { ValidationException } from './common/exceptions/validation.exception.js';
+import { AllExceptionsFilter } from './common/filters/all-exception.filter.js';
+import rawBodyMiddleware from './utils/rawBody.middleware.js';
 import { apiReference } from '@scalar/nestjs-api-reference';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     snapshot: true,
+    // v12 route conflict diagnostics: fail on duplicates, warn when a
+    // parametric route (e.g. `:id`) can shadow a literal one (e.g. `me`).
+    routeConflictPolicy: { duplicate: 'error', shadow: 'warn' },
+    routeResolutionStrategy: 'specificity',
   });
 
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('port');
+  const port = configService.getOrThrow<number>('port');
   const logger = app.get(Logger);
-  const corsMaxAge = configService.get<number>('corsMaxAge');
+  const corsMaxAge = configService.getOrThrow<number>('corsMaxAge');
 
   const helmetContentSecurityPolicy = {
     directives: {
@@ -61,13 +68,10 @@ async function bootstrap() {
 
   app.useGlobalFilters(new AllExceptionsFilter(), new BaseExceptionsFilter());
   app.useGlobalPipes(
-    new ValidationPipe({
-      exceptionFactory: (errors) => {
-        return new ValidationException(errors);
+    new StandardSchemaValidationPipe({
+      exceptionFactory: (issues) => {
+        return new ValidationException(issues);
       },
-      transform: true,
-      whitelist: true,
-      validationError: { target: false },
     }),
   );
 
@@ -78,10 +82,6 @@ async function bootstrap() {
     .setDescription('WaveZync NestJS starter')
     .setVersion('1.0')
     .addServer(`http://localhost:${port}`, 'Local')
-    .setExternalDoc(
-      'For Validation Errors please check class-validator',
-      'https://github.com/typestack/class-validator#validation-errors',
-    )
     .addBearerAuth()
     .addGlobalParameters({
       in: 'path',
@@ -104,4 +104,4 @@ async function bootstrap() {
     logger.log(`Application started at port:${port}`);
   });
 }
-bootstrap();
+void bootstrap();

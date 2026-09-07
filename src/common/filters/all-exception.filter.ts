@@ -10,9 +10,12 @@ import {
 } from '@nestjs/common';
 import { GqlArgumentsHost } from '@nestjs/graphql';
 import { Response } from 'express';
-import { ErrorCodes } from '../errors/error-codes';
-import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import { UnauthorizedException } from '../exceptions/unauthorized.exception';
+import { ErrorCodes } from '../errors/error-codes.js';
+import jsonwebtoken from 'jsonwebtoken';
+
+const { JsonWebTokenError: JsonWebTokenErrorClass, TokenExpiredError: TokenExpiredErrorClass } =
+  jsonwebtoken;
+import { UnauthorizedException } from '../exceptions/unauthorized.exception.js';
 import { AuthenticationError } from '@nestjs/apollo';
 
 @Catch()
@@ -25,10 +28,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logger.error(exception);
 
     if (gqlHost.getType<ContextType | 'graphql'>() === 'graphql') {
-      if (exception instanceof TokenExpiredError) {
+      if (exception instanceof TokenExpiredErrorClass) {
         return new AuthenticationError('Unauthorized');
       }
-      if (exception instanceof JsonWebTokenError) {
+      if (exception instanceof JsonWebTokenErrorClass) {
         return new AuthenticationError('Invalid token');
       }
 
@@ -43,7 +46,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       return;
     }
 
-    if (exception instanceof TokenExpiredError) {
+    if (exception instanceof TokenExpiredErrorClass) {
       response.status(HttpStatus.UNAUTHORIZED).json({
         statusCode: HttpStatus.UNAUTHORIZED,
         message: 'Unauthorized',

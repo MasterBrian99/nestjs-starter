@@ -5,18 +5,27 @@ import {
   HttpCode,
   HttpStatus,
   Get,
+  UseInterceptors,
+} from '@nestjs/common';
+import {
+  SerializeOptions,
+  StandardSchemaSerializerInterceptor,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { Public, CurrentUser } from 'common/decorators';
-import { UserDto } from '../user/dtos/user.dto';
-import { AuthService } from './auth.service';
-import { LoginResponseDto } from './dtos/login-response.dto';
-import { LoginDto } from './dtos/login.dto';
-import { CurrentUserDto } from './dtos/current-user.dto';
-import { ApiUnauthorizedException } from 'common/decorators/api-unauthorized-exception.decorator';
-import { TemplatedApiException } from 'common/decorators/templated-api-exception.decorator';
-import { InvalidLoginOrPasswordException } from './exceptions/invalid-login-or-password.exception';
-import { ApiUnknownErrorException } from 'common/decorators/api-unknown-error-exception.decorator';
+import { Public, CurrentUser } from '../../common/decorators/index.js';
+import { UserDto } from '../user/dtos/user.dto.js';
+import { AuthService } from './auth.service.js';
+import { LoginResponseDto } from './dtos/login-response.dto.js';
+import { loginSchema, type LoginDto } from './dtos/login.schema.js';
+import {
+  currentUserSchema,
+  loginResponseSchema,
+} from './dtos/login-response.schema.js';
+import { CurrentUserDto } from './dtos/current-user.dto.js';
+import { ApiUnauthorizedException } from '../../common/decorators/api-unauthorized-exception.decorator.js';
+import { TemplatedApiException } from '../../common/decorators/templated-api-exception.decorator.js';
+import { InvalidLoginOrPasswordException } from './exceptions/invalid-login-or-password.exception.js';
+import { ApiUnknownErrorException } from '../../common/decorators/api-unknown-error-exception.decorator.js';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -32,7 +41,11 @@ export class AuthController {
   })
   @TemplatedApiException(() => new InvalidLoginOrPasswordException())
   @ApiUnknownErrorException()
-  login(@Body() loginDto: LoginDto): Promise<LoginResponseDto | undefined> {
+  @UseInterceptors(StandardSchemaSerializerInterceptor)
+  @SerializeOptions({ schema: loginResponseSchema })
+  login(
+    @Body({ schema: loginSchema }) loginDto: LoginDto,
+  ): Promise<LoginResponseDto | undefined> {
     return this.authService.loginUser(loginDto);
   }
 
@@ -40,6 +53,8 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiUnknownErrorException()
   @ApiUnauthorizedException()
+  @UseInterceptors(StandardSchemaSerializerInterceptor)
+  @SerializeOptions({ schema: currentUserSchema })
   async me(@CurrentUser() user: UserDto): Promise<CurrentUserDto> {
     return { user };
   }

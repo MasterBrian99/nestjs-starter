@@ -23,7 +23,7 @@ export class UserDto {
    * @type {string}
    * @memberof UserDto
    */
-  name!: string;
+  name!: string | null;
 
   /**
    * Is user verified

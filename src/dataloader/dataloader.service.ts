@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import DataLoader from 'dataloader';
-import { IDataLoaders } from './interfaces/dataloaders';
-import { UserService } from 'modules/user/user.service';
+import { IDataLoaders } from './interfaces/dataloaders.js';
+import { UserService } from '../modules/user/user.service.js';
 
 @Injectable()
 export class DataloaderService {

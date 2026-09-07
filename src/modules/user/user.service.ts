@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { RegisterUserDto } from './dtos/register-user.dto';
+import { type RegisterUserDto } from './dtos/register-user.schema.js';
 import bcrypt from 'bcrypt';
-import { UserObject } from './dtos/objects/user.object';
-import { EmailAlreadyTakenException } from './exceptions/email-already-taken.exception';
-import { UserRepositoy } from './repository/user.respository';
+import { UserObject } from './dtos/objects/user.object.js';
+import { EmailAlreadyTakenException } from './exceptions/email-already-taken.exception.js';
+import { UnknownErrorException } from '../../common/exceptions/unknown-error.exception.js';
+import { UserRepositoy } from './repository/user.respository.js';
 
 const BCRYPT_HASH_ROUNDS = 10;
 
@@ -33,7 +34,12 @@ export class UserService {
     const user = await this.userRepositoy.createUser({
       email: email.toLowerCase(),
       passwordHash,
+      name: null,
     });
+
+    if (!user) {
+      throw new UnknownErrorException();
+    }
 
     return user.toDto();
   }

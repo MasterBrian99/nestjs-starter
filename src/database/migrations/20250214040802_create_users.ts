@@ -1,5 +1,5 @@
 import { Kysely, sql } from 'kysely';
-import { DB } from '../schema/db';
+import { DB } from '../schema/db.js';
 
 const tableName = 'users';
 
